@@ -43,18 +43,25 @@ namespace SpaceXBot.Modules
                     await e.Channel.SendMessage("NO!");
                 });
 
-                g.CreateCommand("echo")
-                .Description("Make the bot speak to you!")
-                .Parameter("text", ParameterType.Unparsed)
+                g.CreateCommand("info")
+                .Description("Returns information about the bot: Version, owner")
                 .Do(async e =>
                 {
-                    if(e.GetArg("text") == "")
-                    {
-                        await e.Channel.SendMessage("Echo what?");
-                        return;
-                    }
-                    await e.Channel.SendMessage(e.Args[0]);
+                    await e.Channel.SendMessage("**App Name: **" + SpaceXBot.Core.SpxBot.Config.AppName + " **App Version: **" + SpaceXBot.Core.SpxBot.Config.AppVersion.ToString() + " **Owner: ** Scorp" );
                 });
+
+                //g.CreateCommand("echo")
+                //.Description("Make the bot speak to you!")
+                //.Parameter("text", ParameterType.Unparsed)
+                //.Do(async e =>
+                //{
+                //    if(e.GetArg("text") == "")
+                //    {
+                //        await e.Channel.SendMessage("Echo what?");
+                //        return;
+                //    }
+                //    await e.Channel.SendMessage(e.Args[0]);
+                //});
             });
         }
     }

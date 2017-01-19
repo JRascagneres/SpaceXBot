@@ -19,8 +19,12 @@ namespace SpaceXBot.Modules
         private DiscordClient _client;
         private List<Launch> _launches;
         private string fileName = "launches.json";
-
+#if (DEBUG)
+        private ulong[] channelIDs = SpaceXBot.Core.SpxBot.Config.CountdownChannelDebugIDs;
+#else
         private ulong[] channelIDs = SpaceXBot.Core.SpxBot.Config.CountdownChannelIDs;
+#endif
+
 
         public void Install(ModuleManager manager)
         {
@@ -41,28 +45,34 @@ namespace SpaceXBot.Modules
                 .Parameter("time", ParameterType.Required)
                 .Do(async e =>
                 {
-                    if (e.GetArg("vehicle") == "" || e.GetArg("payload") == "" || e.GetArg("time") == "")
-                    {
-                        await e.Channel.SendMessage("Please Enter: <vehicle> <payload> <\"dd/MM/yyyy HH:mm:ss \">");
-                        return;
-                    }
-
-                    DateTime time = DateTime.ParseExact(e.GetArg("time"), "dd/MM/yyyy HH:mm:ss", null);
-                    await e.Channel.SendMessage("Launch Of: " + e.GetArg("vehicle") + " Carrying: " + e.GetArg("payload") + " --- Countdown Set For: " + time.ToString("dd/MM/yyyy") + " " + time.ToString("HH:mm:ss") + " UTC");
-
-                    _launches.Add(
-                        new Launch
+                    if (e.Server.Id == 153646955464097792 || e.Server.Id == 231819506035458060) {
+                        if (e.GetArg("vehicle") == "" || e.GetArg("payload") == "" || e.GetArg("time") == "")
                         {
-                            Vehicle = e.GetArg("vehicle"),
-                            Payload = e.GetArg("payload"),
-                            Time = time,
-                            Id = _launches.Any() ? _launches.Max(x => x.Id) + 1 : 0
-                        });
+                            await e.Channel.SendMessage("Please Enter: <vehicle> <payload> <\"dd/MM/yyyy HH:mm:ss \">");
+                            return;
+                        }
 
-                    if (_launches.Any())
-                        _launches = _launches.OrderBy(x => x.Time).ToList();
+                        DateTime time = DateTime.ParseExact(e.GetArg("time"), "dd/MM/yyyy HH:mm:ss", null);
+                        await e.Channel.SendMessage("Launch Of: " + e.GetArg("vehicle") + " Carrying: " + e.GetArg("payload") + " --- Countdown Set For: " + time.ToString("dd/MM/yyyy") + " " + time.ToString("HH:mm:ss") + " UTC");
 
-                    await JsonStorage.SerializeObjectToFile(_launches, fileName);
+                        _launches.Add(
+                            new Launch
+                            {
+                                Vehicle = e.GetArg("vehicle"),
+                                Payload = e.GetArg("payload"),
+                                Time = time,
+                                Id = _launches.Any() ? _launches.Max(x => x.Id) + 1 : 0
+                            });
+
+                        if (_launches.Any())
+                            _launches = _launches.OrderBy(x => x.Time).ToList();
+
+                        await JsonStorage.SerializeObjectToFile(_launches, fileName);
+                    }
+                    else
+                    {
+                        await e.Channel.SendMessage("Operation cannot be performed on this server!");
+                    }
                 });
 
                 g.CreateCommand("listLaunches")
@@ -245,15 +255,24 @@ namespace SpaceXBot.Modules
                            {
                                foreach (ulong channelID in channelIDs)
                                {
-                                   await _client.GetChannel(channelID).SendMessage("**" + _launches[launchCount].Vehicle + " Launching in " + remaining.Hours.ToString() + "Hours **");
+                                   await _client.GetChannel(channelID).SendMessage("**" + _launches[launchCount].Vehicle + " Launching in " + remaining.Hours.ToString() + " Hours **");
                                }
-                           } else if ((remaining.Minutes == 30 || remaining.Minutes == 15 || remaining.Minutes == 10 || remaining.Minutes == 5 || remaining.Minutes == 2) && remaining.Hours == 0 && remaining.Days == 0 && remaining.Seconds == 0)
+                           }
+                           else if ((remaining.Minutes == 30 || remaining.Minutes == 15 || remaining.Minutes == 10 || remaining.Minutes == 5 || remaining.Minutes == 2) && remaining.Hours == 0 && remaining.Days == 0 && remaining.Seconds == 0)
                            {
                                foreach (ulong channelID in channelIDs)
                                {
-                                   await _client.GetChannel(channelID).SendMessage("**" + _launches[launchCount].Vehicle + " Launching in " + remaining.Minutes.ToString() + "Minutes **");
+                                   await _client.GetChannel(channelID).SendMessage("**" + _launches[launchCount].Vehicle + " Launching in " + remaining.Minutes.ToString() + " Minutes **");
                                }
-                           } else if (remaining.Minutes == 0 && remaining.Hours == 0 && remaining.Days == 0 && remaining.Seconds == 0)
+                           }
+                           else if (remaining.Minutes == 0 && remaining.Hours == 0 && remaining.Days == 0 && (remaining.Seconds == 30 || remaining.Seconds == 10))
+                           {
+                               foreach (ulong channelID in channelIDs)
+                               {
+                                   await _client.GetChannel(channelID).SendMessage("**" + _launches[launchCount].Vehicle + " T-0 in " + remaining.Seconds.ToString() + " Seconds **" );
+                               }
+                           }
+                           else if (remaining.Minutes == 0 && remaining.Hours == 0 && remaining.Days == 0 && remaining.Seconds == 0)
                            {
                                foreach (ulong channelID in channelIDs)
                                {

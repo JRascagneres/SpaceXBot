@@ -19,7 +19,11 @@ namespace SpaceXBot.Modules
             var reddit = new Reddit();
             var user = reddit.LogIn("SPXBot", "ZT7v74Jtdh7rb2wUtkFtnRzuq723QS");
             var subreddit = reddit.GetSubreddit("/r/spacex");
+#if DEBUG
+            ulong[] channelIDs = SpaceXBot.Core.SpxBot.Config.RedditChannelDebugIDs;
+#else
             ulong[] channelIDs = SpaceXBot.Core.SpxBot.Config.RedditChannelIDs;
+#endif 
 
             int postCheck = 4;
             List<string> Ids = new List<string>() {};

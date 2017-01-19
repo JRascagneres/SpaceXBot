@@ -34,6 +34,7 @@ namespace SpaceXBot.Core
                 x.LogLevel = LogSeverity.Info;
                 x.LogHandler = OnLogMessage;
                 x.UsePermissionsCache = false;
+                x.AppVersion = Config.AppVersion.ToString();
             })
             .UsingModules()
             .UsingCommands(x =>

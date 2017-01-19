@@ -12,10 +12,14 @@ namespace SpaceXBot.Config
         public string AppName { get; set; }
         public string AppUrl { get; set; }
         public string botID { get; set; }
+        public float AppVersion { get; set; }
 
         public Dictionary<string, ulong> OwnerIds { get; set; }
         public ulong[] RedditChannelIDs { get; set; }
         public ulong[] CountdownChannelIDs { get; set; }
+
+        public ulong[] RedditChannelDebugIDs { get; set; }
+        public ulong[] CountdownChannelDebugIDs { get; set; }
 
         public static BotConfig CreateFromJson(string json)
         {
