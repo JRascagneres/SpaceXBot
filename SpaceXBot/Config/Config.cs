@@ -21,6 +21,8 @@ namespace SpaceXBot.Config
         public ulong[] RedditChannelDebugIDs { get; set; }
         public ulong[] CountdownChannelDebugIDs { get; set; }
 
+        public ulong[] MasterServerIDs { get; set; }
+
         public static BotConfig CreateFromJson(string json)
         {
             return JsonConvert.DeserializeObject<BotConfig>(json);

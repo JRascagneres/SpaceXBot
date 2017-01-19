@@ -45,7 +45,7 @@ namespace SpaceXBot.Modules
                 .Parameter("time", ParameterType.Required)
                 .Do(async e =>
                 {
-                    if (e.Server.Id == 153646955464097792 || e.Server.Id == 231819506035458060) {
+                    if (SpaceXBot.Core.SpxBot.Config.MasterServerIDs.Contains(e.Server.Id) || SpaceXBot.Core.SpxBot.Config.OwnerIds.ContainsValue(e.User.Id)) {
                         if (e.GetArg("vehicle") == "" || e.GetArg("payload") == "" || e.GetArg("time") == "")
                         {
                             await e.Channel.SendMessage("Please Enter: <vehicle> <payload> <\"dd/MM/yyyy HH:mm:ss \">");
@@ -162,23 +162,29 @@ namespace SpaceXBot.Modules
                 .Parameter("reason", ParameterType.Required)
                 .Do(async e =>
                 {
-                    int number = (Int32.Parse(e.GetArg("number")) - 1);
-
-                    if(_launches.Where(x => x.Time > DateTime.UtcNow).Count() < number + 1 || number < 0)
+                    if (SpaceXBot.Core.SpxBot.Config.MasterServerIDs.Contains(e.Server.Id) || SpaceXBot.Core.SpxBot.Config.OwnerIds.ContainsValue(e.User.Id))
                     {
-                        await e.Channel.SendMessage("Invalid index!");
-                        return;
+                        int number = (Int32.Parse(e.GetArg("number")) - 1);
+
+                        if (_launches.Where(x => x.Time > DateTime.UtcNow).Count() < number + 1 || number < 0)
+                        {
+                            await e.Channel.SendMessage("Invalid index!");
+                            return;
+                        }
+
+                        Launch launch = _launches.Where(x => x.Time > DateTime.UtcNow).ToArray()[number];
+
+                        launch.ScrubReason = e.GetArg("reason");
+
+                        _launches = _launches.OrderBy(x => x.Id).ToList();
+
+                        await JsonStorage.SerializeObjectToFile(_launches, fileName);
+
+                        await e.Channel.SendMessage("Launch data updated!");
+                    }else
+                    {
+                        await e.Channel.SendMessage("Operation cannot be performed on this server!");
                     }
-
-                    Launch launch = _launches.Where(x => x.Time > DateTime.UtcNow).ToArray()[number];
-
-                    launch.ScrubReason = e.GetArg("reason");
-
-                    _launches = _launches.OrderBy(x => x.Id).ToList();
-
-                    await JsonStorage.SerializeObjectToFile(_launches, fileName);
-
-                    await e.Channel.SendMessage("Launch data updated!");
                 });
 
                 g.CreateCommand("deleteLaunch")
@@ -187,21 +193,28 @@ namespace SpaceXBot.Modules
                 .Parameter("number", ParameterType.Required)
                 .Do(async e =>
                 {
-                    int number = (Int32.Parse(e.GetArg("number")) - 1);
-
-                    if (_launches.Where(x => x.Time > DateTime.UtcNow).Count() < number + 1 || number < 0)
+                    if (SpaceXBot.Core.SpxBot.Config.MasterServerIDs.Contains(e.Server.Id) || SpaceXBot.Core.SpxBot.Config.OwnerIds.ContainsValue(e.User.Id))
                     {
-                        await e.Channel.SendMessage("Invalid index!");
-                        return;
+                        int number = (Int32.Parse(e.GetArg("number")) - 1);
+
+                        if (_launches.Where(x => x.Time > DateTime.UtcNow).Count() < number + 1 || number < 0)
+                        {
+                            await e.Channel.SendMessage("Invalid index!");
+                            return;
+                        }
+
+                        Launch launch = _launches.Where(x => x.Time > DateTime.UtcNow).ToArray()[number];
+
+                        _launches.Remove(launch);
+                        _launches = _launches.OrderBy(x => x.Time).ToList();
+
+                        await JsonStorage.SerializeObjectToFile(_launches, fileName);
+                        await e.Channel.SendMessage("Deleted Launch!");
                     }
-
-                    Launch launch = _launches.Where(x => x.Time > DateTime.UtcNow).ToArray()[number];
-
-                    _launches.Remove(launch);
-                    _launches = _launches.OrderBy(x => x.Time).ToList();
-
-                    await JsonStorage.SerializeObjectToFile(_launches, fileName);
-                    await e.Channel.SendMessage("Deleted Launch!");
+                    else
+                    {
+                        await e.Channel.SendMessage("Operation cannot be performed on this server!");
+                    }
                 });
 
                 g.CreateCommand("editlaunch")
@@ -213,30 +226,37 @@ namespace SpaceXBot.Modules
                 .Parameter("time", ParameterType.Required)
                 .Do(async e =>
                 {
-                    DateTime time = DateTime.ParseExact(e.GetArg("time"), "dd/MM/yyyy HH:mm:ss", null);
-
-                    int number = (Int32.Parse(e.GetArg("number")) - 1);
-
-                    if (_launches.Where(x => x.Time > DateTime.UtcNow).Count() < number + 1 || number < 0)
+                    if (SpaceXBot.Core.SpxBot.Config.MasterServerIDs.Contains(e.Server.Id) || SpaceXBot.Core.SpxBot.Config.OwnerIds.ContainsValue(e.User.Id))
                     {
-                        await e.Channel.SendMessage("Invalid index!");
-                        return;
+                        DateTime time = DateTime.ParseExact(e.GetArg("time"), "dd/MM/yyyy HH:mm:ss", null);
+
+                        int number = (Int32.Parse(e.GetArg("number")) - 1);
+
+                        if (_launches.Where(x => x.Time > DateTime.UtcNow).Count() < number + 1 || number < 0)
+                        {
+                            await e.Channel.SendMessage("Invalid index!");
+                            return;
+                        }
+
+                        Launch launch = _launches.Where(x => x.Time > DateTime.UtcNow).ToArray()[number];
+
+                        String vehicle = e.GetArg("vehicle");
+                        String payload = e.GetArg("payload");
+
+                        _launches.First(x => x.Id == launch.Id).Vehicle = vehicle;
+                        _launches.First(x => x.Id == launch.Id).Payload = payload;
+                        _launches.First(x => x.Id == launch.Id).Time = time;
+
+                        _launches = _launches.OrderBy(x => x.Time).ToList();
+
+                        await JsonStorage.SerializeObjectToFile(_launches, fileName);
+
+                        await e.Channel.SendMessage("Launch data updated");
                     }
-
-                    Launch launch = _launches.Where(x => x.Time > DateTime.UtcNow).ToArray()[number];
-
-                    String vehicle = e.GetArg("vehicle");
-                    String payload = e.GetArg("payload");
-
-                    _launches.First(x => x.Id == launch.Id).Vehicle = vehicle;
-                    _launches.First(x => x.Id == launch.Id).Payload = payload;
-                    _launches.First(x => x.Id == launch.Id).Time = time;
-
-                    _launches = _launches.OrderBy(x => x.Time).ToList();
-
-                    await JsonStorage.SerializeObjectToFile(_launches, fileName);
-
-                    await e.Channel.SendMessage("Launch data updated");
+                    else
+                    {
+                        await e.Channel.SendMessage("Operation cannot be performed on this server!");
+                    }
                 });
 
             });

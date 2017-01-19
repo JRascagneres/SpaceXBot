@@ -1,16 +1,23 @@
 ﻿{
   "AppName": "SPXBot",
   "AppUrl": "spacex.com",
-  "AppVersion":  2.0,
+  "AppVersion": 2.0,
   "RedditChannelIDs": [ 269584974875852801, 153646955464097792 ],
   //YorkCS #spxreddit -- -- Space Enthusiasts #general,
+
   "RedditChannelDebugIDs": [ 154309859238477824 ],
   // SpaceXBotTests #general
+
   "CountdownChannelIDs": [ 231819506035458060, 153855010109652992 ],
   //YorkCS #general -- Space Enthusiasts #launch-event,
+
   "CountdownChannelDebugIDs": [ 154309859238477824 ],
   // SpaceXBotTests #general
+
   "botID": "MjU2NzY2MTE3NTA1MjY5NzYw.C1qFFw.4nGl0-CHL0_nyNWPORoqASBlPP0",
+  "MasterServerIDs": [ 231819506035458060, 153646955464097792, 154309859238477824 ],
+  //YorkCS -- Space Enthusiasts == SpaceXBotTests
+
 
   "OwnerIds": {
     "Scorp": 150768477152477186
