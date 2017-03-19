@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using SpaceXBot.Core;
 
 namespace SpaceXBot.DataAccess
 {
@@ -34,5 +35,11 @@ namespace SpaceXBot.DataAccess
         {
             return JsonConvert.DeserializeObject<T>(File.ReadAllText(fileName));
         }
+
+        public static List<T> DeserializeObjec<T>(string json)
+        {
+            return JsonConvert.DeserializeObject<List<T>>(json);
+        }
+
     }
 }

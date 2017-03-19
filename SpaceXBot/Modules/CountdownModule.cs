@@ -10,6 +10,8 @@ using Discord.Commands.Permissions.Levels;
 using SpaceXBot.Core;
 using SpaceXBot.DataAccess;
 using System.IO;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace SpaceXBot.Modules
 {
@@ -257,6 +259,24 @@ namespace SpaceXBot.Modules
                     {
                         await e.Channel.SendMessage("Operation cannot be performed on this server!");
                     }
+                });
+                g.CreateCommand("testLoad")
+                .Do(async e =>
+                {
+                    using (var webClient = new WebClient())
+                    {
+                        webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36");
+                        var response = webClient.DownloadString("https://launchlibrary.net/1.2/launch?next=5");
+                        Console.WriteLine(response);
+                        var test = JsonStorage.DeserializeObjec<RootObject>(response);
+                        Console.WriteLine(test);
+                    }
+
+                    
+
+
+
+                    await e.Channel.SendMessage("TEST");
                 });
 
             });
