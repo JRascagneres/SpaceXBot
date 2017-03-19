@@ -36,9 +36,9 @@ namespace SpaceXBot.DataAccess
             return JsonConvert.DeserializeObject<T>(File.ReadAllText(fileName));
         }
 
-        public static List<T> DeserializeObjec<T>(string json)
+        public static RootObject DeserializeObject(string json)
         {
-            return JsonConvert.DeserializeObject<List<T>>(json);
+            return JsonConvert.DeserializeObject<RootObject>(json);
         }
 
     }

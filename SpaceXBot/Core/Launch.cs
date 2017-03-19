@@ -8,11 +8,11 @@ namespace SpaceXBot.Core
 {
     public class Launch
     {
-        public String Vehicle { get; set; }
-        public String Payload { get; set; }
-        public DateTime Time { get; set; }
-        public String ScrubReason { get; set; }
-        public int Id { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string net { get; set; }
+        public int tbdtime { get; set; }
+        public int tbddate { get; set; }
     }
 
     public class RootObject
@@ -20,6 +20,6 @@ namespace SpaceXBot.Core
         public int total { get; set; }
         public List<Launch> launches { get; set; }
         public int offset { get; set; }
-        public int count { get; set;}
+        public int count { get; set; }
     }
 }

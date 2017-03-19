@@ -12,6 +12,7 @@ namespace SpaceXBot.Config
         public string AppName { get; set; }
         public string AppUrl { get; set; }
         public string botID { get; set; }
+        public string debugBotID { get; set; }
         public float AppVersion { get; set; }
 
         public Dictionary<string, ulong> OwnerIds { get; set; }

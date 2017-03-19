@@ -14,7 +14,8 @@
   "CountdownChannelDebugIDs": [ 154309859238477824 ],
   // SpaceXBotTests #general
 
-  "botID": "MjU2NzY2MTE3NTA1MjY5NzYw.C1qFFw.4nGl0-CHL0_nyNWPORoqASBlPP0",
+  "botID": "",
+  "debugBotID":  "",
   "MasterServerIDs": [ 231819506035458060, 153646955464097792, 154309859238477824, 132478131490521089],
   //YorkCS -- Space Enthusiasts -- SpaceXBotTests -- KerbalSpacePrograms
 

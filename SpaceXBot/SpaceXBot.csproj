@@ -90,6 +90,7 @@
     <Compile Include="Config\Config.cs" />
     <Compile Include="Core\Launch.cs" />
     <Compile Include="DataAccess\JsonStorage.cs" />
+    <Compile Include="DataAccess\Utils.cs" />
     <Compile Include="Modules\CountdownModule.cs" />
     <Compile Include="Modules\PermissionLevels.cs" />
     <Compile Include="Modules\RedditModule.cs" />

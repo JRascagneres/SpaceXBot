@@ -56,7 +56,11 @@ namespace SpaceXBot.Core
                 {
                     try
                     {
+#if (DEBUG)
+                        await client.Connect(Config.debugBotID, TokenType.Bot);
+#else
                         await client.Connect(Config.botID, TokenType.Bot);
+#endif
                         //client.SetGame("Monitoring Chat");
                         break;
                     }
